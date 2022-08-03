@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboardLayout_copy.html}">
+
+<head>
+
+</head>
+
+<body>
+    <section class="row" layout:fragment="content">
+        <style>
+            a:link {
+                text-decoration: none;
+            }
+
+            a:visited {
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: none;
+            }
+
+            a:active {
+                text-decoration: none;
+            }
+        </style>
+        <div class="col mt-4 mb-3">
+            <div class="card pb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between"
+                        style="border-bottom: 1px solid black;border-color: rgb(207, 207, 207);">
+                        <h3 class="card-header"
+                            style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+                            Customer Dashboard</h3>
+                        <div class="d-flex align-items-center">
+                            <a class="nav-link" th:href="@{/customer/jobs/add}"><button type="button"
+                                    class="btn btn-light" style="background-color: rgb(95, 97, 230);">
+                                    <span style="font-size: 115%;font-weight: 450; color: white;">Post a
+                                        Job</span></button></a>
+                        </div>
+                    </div>
+
+                    <!--Management card-->
+                    <div class="row d-flex justify-content-around mt-3">
+
+                        <a class="col-xl-3 col-md-6 mb-4 h-100 py-2" th:href="@{/customer/jobs}">
+                            <div class="card border-left-primary shadow h-100 py-2"
+                                style="border-left: .25rem solid #4e73df!important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Jobs posted</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                                th:text="${postedJobsCount}"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a class="col-xl-3 col-md-6 mb-4 h-100 py-2" th:href="@{/customer/jobs/ongoing}">
+                            <div class="card border-left-primary shadow h-100 py-2"
+                                style="border-left: .25rem solid #1cc88a!important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                On-going Jobs</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                                th:text="${ongoingJobsCount}"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a class="col-xl-3 col-md-6 mb-4 h-100 py-2" th:href="@{/customer/proposals}">
+                            <div class="card border-left-primary shadow h-100 py-2"
+                                style="border-left: .25rem solid #36b9cc!important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Proposals</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                                th:text="${proposalCounts}"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a class="col-xl-3 col-md-6 mb-4 h-100 py-2" th:href="@{/customer/proposals}">
+                            <div class="card border-left-primary shadow h-100 py-2"
+                                style="border-left: .25rem solid #f6c23e!important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Hired</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                                th:text="${approvedProposalCounts}"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!--Chart-->
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-5" th:if="${postedJobsCount > 0}">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Posted Jobs Status</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <div class="chartjs-size-monitor">
+                                            <div class="chartjs-size-monitor-expand">
+                                                <div class=""></div>
+                                            </div>
+                                            <div class="chartjs-size-monitor-shrink">
+                                                <div class=""></div>
+                                            </div>
+                                        </div>
+                                        <canvas id="myChartJob" style="width:100%;max-width:800px;border-radius: 0;"
+                                            class=""></canvas>
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #b91d47;"></i> Hiring
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #00aba9;"></i> On-going
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #2b5797;"></i> Completed
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-5" th:if="${proposalCounts > 0}">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Received Proposals Status</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <div class="chartjs-size-monitor">
+                                            <div class="chartjs-size-monitor-expand">
+                                                <div class=""></div>
+                                            </div>
+                                            <div class="chartjs-size-monitor-shrink">
+                                                <div class=""></div>
+                                            </div>
+                                        </div>
+                                        <canvas id="myChartProposal"
+                                            style="width:100%;max-width:800px;border-radius: 0;" class=""></canvas>
+                                    </div>
+                                    <div class="mt-4 text-center small">
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #ff2c02;"></i> Rejected
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #bd00fc;"></i> Processing
+                                        </span>
+                                        <span class="mr-2">
+                                            <i class="fas fa-circle" style="color: #00fc04;"></i> Approved
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row d-none d-md-block">
+                        <div class="col" th:if="${postedJobsCount > 0}">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Posted Jobs Field</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-bar">
+                                        <div class="chartjs-size-monitor">
+                                            <div class="chartjs-size-monitor-expand">
+                                                <div class=""></div>
+                                            </div>
+                                            <div class="chartjs-size-monitor-shrink">
+                                                <div class=""></div>
+                                            </div>
+                                        </div>
+                                        <canvas id="myBarChart" style="display: block; height: 160px; width: 432px;"
+                                            width="540" height="200" class="chartjs-render-monitor"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--info-->
+                    <div class="row" th:if="${postedJobsCount == 0}">
+                        <div class="col mb-4">
+                            <!-- Illustrations -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Notice</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
+                                            th:src="@{/assets/img/index/about.jpg}" alt="...">
+                                    </div>
+                                    <p>Seems like you haven't post any job yet? It’s free and easy to post a job. Simply
+                                        fill in a title, description and budget and competitive bids come within
+                                        minutes. No job is too big or too small. We've got freelancers for jobs of any
+                                        size or budget, across 50+ skills. No job is too complex. We can get it done!
+                                    </p>
+                                    <a th:href="@{/customer/jobs/add}"><button type="button"
+                                    class="btn btn-light" style="background-color: rgb(95, 97, 230);">
+                                    <span style="font-size: 115%;font-weight: 450; color: white;">Post a
+                                        Job</span></button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:inline="javascript">
+            var xValues = ["Hiring", "Ongoing", "Completed"];
+            var hiring = [(${ hiringJobsCount })];
+            var ongoing = [(${ ongoingJobsCount })];
+            var completed = [(${ completedJobsCount })];
+            var yValues = [hiring, ongoing, completed];
+            var barColors = [
+                "#b91d47",
+                "#00aba9",
+                "#2b5797"
+            ];
+
+            new Chart("myChartJob", {
+                type: "pie",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: false,
+                        text: "Posted Jobs Status"
+                    }
+                }
+            });
+
+            var xValuesP = ["Rejected", "Waiting for Approval", "Approved"];
+            var rejected = [(${ rejectedProposalCounts })];
+            var processing = [(${ processingProposalCounts })];
+            var approved = [(${ approvedProposalCounts })];
+            var yValuesP = [rejected, processing, approved];
+            var barColorsP = [
+                "#ff2c02",
+                "#bd00fc",
+                "#00fc04"
+            ];
+
+            new Chart("myChartProposal", {
+                type: "doughnut",
+                data: {
+                    labels: xValuesP,
+                    datasets: [{
+                        backgroundColor: barColorsP,
+                        data: yValuesP
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: false,
+                        text: "Proposals Status"
+                    }
+                }
+            });
+
+            var xValuesF = ["AI, Machine Learning", "Embedded Programming", "Software Programming", "Web Programming", "QA Tester", "Project Manager", "Search Engine Optimization", "Mobile Application", "Web System Consulting", "Others"];
+            var job1 = [(${ job1Count })];
+            var job2 = [(${ job2Count })];
+            var job3 = [(${ job3Count })];
+            var job4 = [(${ job4Count })];
+            var job5 = [(${ job5Count })];
+            var job6 = [(${ job6Count })];
+            var job7 = [(${ job7Count })];
+            var job8 = [(${ job8Count })];
+            var job9 = [(${ job9Count })];
+            var job10 = [(${ job10Count })];
+            var yValuesF = [job1, job2, job3, job4, job5, job6, job7, job8, job9, job10];
+            var barColorsF = [
+                "#4e73df",
+                "#4e73df",
+                "#4e73df",
+                "#4e73df",
+                "#4e73df",
+                "#4e73df",
+                "#4e73df",
+                "#4e73df",
+                "#4e73df",
+                "#4e73df",
+            ];
+
+            new Chart("myBarChart", {
+                type: "bar",
+                data: {
+                    labels: xValuesF,
+                    datasets: [{
+                        backgroundColor: barColorsF,
+                        data: yValuesF
+                    }]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: false,
+                        text: "Posted Jobs Field"
+                    },
+                    scales:{
+                        yAxes: [{
+                            ticks:{
+                                min: 0
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboardLayout_copy.html}">
+
+<head>
+
+</head>
+
+<body>
+    <section class="row" layout:fragment="content">
+        <div class="col mt-4 mb-3">
+            <form th:action="@{/freelancer/proposals/save}" method="post" th:object="${proposal}"
+                enctype="multipart/form-data">
+                <div class="card">
+                    <div class="app-brand justify-content-center pt-5 pb-3">
+                        <h3
+                            style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+                            Write a proposal for this job</h3>
+                    </div>
+                    <div class="col-xl">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="hidden" name="userid" id="userid" th:field="*{userId}">
+                                        <input type="hidden" name="jobid" id="jobid" th:field="*{jobId}">
+                                        <div class="mb-3">
+                                            <label class="form-label" for="bid">My Bid</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-company2" class="input-group-text"><i
+                                                        class="fa-solid fa-coins"></i></span>
+                                                <input th:field="*{bid}" type="number" name="bid" id="bid"
+                                                    class="form-control" style="height: fit-content;" min="0">
+                                                <span class="input-group-text"> VND</span>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="description">Cover letter</label>
+                                            <div class="input-group input-group-merge">
+                                                <textarea rows="5" name="description" id="description" class="form-control"
+                                                    th:field="*{description}" placeholder="John Doe" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-primary">
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+
+</html>

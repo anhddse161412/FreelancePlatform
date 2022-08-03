@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboardLayout_copy.html}">
+
+<head>
+
+</head>
+
+<body>
+    <section class="row" layout:fragment="content">
+        <style>
+            .job-item {
+                padding: 25px !important;
+            }
+        </style>
+        <div class="container-xxl flex-grow-1 pt-3 pb-3 w-75">
+            <!-- Layout Demo -->
+            <div class="row">
+                <!-- filter -->
+                <div class="h-25 card d-block col-12 col-xl-3 mb-4 me-2">
+                    <h5 class="card-header">Search by</h5>
+                    <div class="card-body">
+                        <form th:action="@{/admin/accounts}">
+                            <div class="row">
+                                <div class="form-inline col-sm-12 col-lg-12">
+                                    <div class="d-flex flex-column align-items-start">
+                                        <label for="emailSearch " class="form-label">Email</label>
+                                        <input type="text" class="form-control" name="emailSearch" id="emailSearch"
+                                            aria-describedby="helpId" placeholder="Email" th:value="${emailSearch}">
+                                        <label for="fieldId" class="form-label mt-3">Role</label>
+                                        <select class="form-control" name="roleSearch" id="roleSearch"
+                                            th:value="${roleSearch}">
+                                            <option value="">All</option>
+                                            <option value="2"
+                                                th:selected="${roleSearch!=null && roleSearch.equals('2')}">
+                                                Client
+                                            </option>
+                                            <option value="3"
+                                                th:selected="${roleSearch!=null && roleSearch.equals('3')}">
+                                                Freelancer
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-10"></div>
+                                <div class="d-flex justify-content-center col-sm-12 col-lg-12">
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /filter -->
+
+                <!-- list jobs -->
+                <div class="card mb-4 col">
+                    <div class="mt-3 w-100">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="card-header"
+                                style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+                                Accounts Management</h3>
+                        </div>
+
+                        <hr>
+
+                        <div class="row" th:if="${!accountPage.hasContent()}">
+                            <div class="col d-flex align-items-center justify-content-center mt-5">
+                                <p style="color: black; font-size: 150%;">No accounts found!</p>
+                            </div>
+                        </div>
+
+                        <div th:if="${!accountPage.isEmpty()}" class="mb-3">
+                            <div th:each="item, iStat : ${accountPage}">
+                                <div class="card mb-2 shadow" th:if="${item.role != 1}">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-3 col-sm-12">
+                                                <div class="form-group">
+                                                    <img id="image"
+                                                        th:src="${item.avatar!=null? item.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                                        class="rounded-circle img-fluid" style="width: 160px;"
+                                                        alt="Avatar">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-9 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-sm-12">
+                                                        <a style="color: black; font-size: 125%;" class="mb-3"
+                                                            th:text="${item.name}"
+                                                            th:href="@{/profile/{id}(id=${item.userId})}"></a>
+                                                        <th:block th:switch="${item.role}">
+                                                            <p th:case="1">Admin</p>
+                                                            <p th:case="2">Client</p>
+                                                            <p th:case="3">Freelancer</p>
+                                                        </th:block>
+                                                    </div>
+                                                    <div class="col-lg-6 col-sm-12">
+                                                        <div class="">
+                                                            <div class="float-lg-right float-md-left" th:if="${item.status == 0}">
+                                                                <a class="btn btn-success"
+                                                                    th:href="@{/admin/activate/{id}(id=${item.userId})}">Activate</a>
+                                                            </div>
+                                                            <div class="float-lg-right float-md-left" th:if="${item.status == 1}">
+                                                                <a class="btn btn-danger"
+                                                                    th:href="@{/admin/deactivate/{id}(id=${item.userId})}">Deactivate</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <div>
+                                                        <th:block th:switch="${item.status}">
+                                                            <p th:case="0" class="mb-0" style="color: black">Account Status:
+                                                                <span style="color: rgb(128, 28, 0);">Disabled</span>
+                                                            </p>
+                                                            <p th:case="1" class="mb-0" style="color: black">Account Status:
+                                                                <span style="color: green;">Active</span></p>
+                                                        </th:block>
+                                                    </div>
+                                                    <div class="mb-0 mt-0">
+                                                        <i style="color: black" class="fa fa-phone"
+                                                            aria-hidden="true"></i>
+                                                        <span style="color: black" th:text="${item.phone}"></span>
+                                                    </div>
+                                                    <div class="mb-0 mt-0">
+                                                        <i style="color: black" class="fa fa-envelope"
+                                                            aria-hidden="true"></i>
+                                                        <span style="color: black" th:text="${item.email}"></span>
+                                                    </div>
+                                                    <div class="mb-0 mt-0">
+                                                        <p style="color: black">Join date: <span style="color: black" th:text="${#temporals.format(item.createdAt, 'HH:mm dd-MM-yyyy')}"></span></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div style="height: 75px; text-overflow: ellipsis; white-space: wrap;
+                                                overflow: hidden; color: black;"><span
+                                                    style="font-weight: 650;">Overview - </span>[[${item.description}]]
+                                            </div>
+                                            <a th:href="@{/profile/{id}(id=${item.userId})}"
+                                                style="color: rgb(120, 123, 255);" class="mb-3">Read more...</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <nav aria-label="Page navigation" th:if="${accountPage.totalPages > 0}">
+                            <ul class="pagination justify-content-end">
+                                <li class="page-item prev" th:if="${accountPage.totalPages > 1}"
+                                    th:class="${ 1 == accountPage.number + 1} ? 'page-item active' : 'page-item' ">
+                                    <a class="page-link"
+                                        th:href="@{/admin/accounts(emailSearch=${emailSearch}, roleSearch=${roleSearch}, size=${accountPage.size}, page=${1})}">First</a>
+                                </li>
+                                <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                    th:class="${ pageNumber == accountPage.number + 1} ? 'page-item active' : 'page-item'">
+                                    <a class="page-link"
+                                        th:href="@{/admin/accounts(emailSearch=${emailSearch}, roleSearch=${roleSearch}, size=${accountPage.size}, page=${pageNumber})}"
+                                        th:text="${pageNumber}"></a>
+                                </li>
+
+                                <li class="page-item next" th:if="${accountPage.totalPages > 1}"
+                                    th:class="${ accountPage.totalPages == accountPage.number + 1} ? 'page-item active' : 'page-item' ">
+                                    <a class="page-link"
+                                        th:href="@{/admin/accounts(emailSearch=${emailSearch}, roleSearch=${roleSearch}, size=${accountPage.size}, page=${accountPage.totalPages})}">Last</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- /list jobs -->
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

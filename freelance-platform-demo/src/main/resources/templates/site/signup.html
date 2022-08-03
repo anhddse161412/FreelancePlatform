@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboardLayout_copy.html}">
+
+<head>
+
+</head>
+
+<body>
+    <section class="row" layout:fragment="content">
+        <div class="container">
+            <div class="authentication-wrapper authentication-basic pt-3 pb-3" style=" min-height: 50vh;">
+                <div class="authentication-inner" style="max-width: 800px">
+                    <!-- Register Card -->
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Logo -->
+                            <div class="app-brand justify-content-center">
+                                <a th:href="@{/}" class="app-brand-link gap-2">
+                                    <span class="app-brand-logo demo">
+                                        <img th:src="@{/assets/img/logo/125.png}" alt="" class="img-fluid" height="1rem" />
+                                    </span>
+                                    <span class="app-brand-text demo text-body fw-bolder">DABAD</span>
+                                </a>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="row mb-5">
+                                    <div class="col-md-6 col-lg-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">I'm a Client</h5>
+                                                <p class="card-text">
+                                                    I'm here to hire for a project. I'm looking for a
+                                                    person to help me with my project.
+                                                </p>
+                                                <div class="d-flex justify-content-center">
+                                                    <a th:href="@{/signup/customer}"
+                                                        class="btn btn-primary">Sign Up as Client</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">I’m a freelancer</h5>
+                                                <p class="card-text">
+                                                    I'm here to look for work. Begin looking for jobs and
+                                                    projects.
+                                                </p>
+                                                <div class="d-flex justify-content-center">
+                                                    <a th:href="@{/signup/freelancer}"
+                                                        class="btn btn-primary">Sign Up as Freelancer</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-center">
+                                <span>Already have an account?</span>
+                                <a th:href="@{/signin}">
+                                    <span style="color: rgb(120, 123, 255);">Sign in instead</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

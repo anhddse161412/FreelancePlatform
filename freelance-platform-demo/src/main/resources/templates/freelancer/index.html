@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboardLayout_copy.html}">
+
+<head>
+
+</head>
+
+<body>
+    <section class="row" layout:fragment="content">
+        <div class="col mt-4 mb-3">
+            <div class="card pb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between"
+                        style="border-bottom: 1px solid black;border-color: rgb(207, 207, 207);">
+                        <h3 class="card-header"
+                            style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+                            Freelancer Dashboard</h3>
+                        <div class="d-flex align-items-center">
+                            <a class="nav-link" th:href="@{/jobs}"><button type="button" class="btn btn-light"
+                                    style="background-color: rgb(95, 97, 230);">
+                                    <span style="font-size: 115%;font-weight: 450; color: white;">Find a
+                                        Job</span></button></a>
+                        </div>
+                    </div>
+                    <!--Management card-->
+                    <div class="row d-flex justify-content-around mt-3">
+
+                        <a class="col-xl-3 col-md-6 mb-4 h-100 py-2" th:href="@{/freelancer/jobs/ongoing}">
+                            <div class="card border-left-primary shadow h-100 py-2"
+                                style="border-left: .25rem solid #4e73df!important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Ongoing jobs</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                                th:text="${ongoingJobsCount}"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a class="col-xl-3 col-md-6 mb-4 h-100 py-2" th:href="@{/freelancer/jobs/completed}">
+                            <div class="card border-left-primary shadow h-100 py-2"
+                                style="border-left: .25rem solid #1cc88a!important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Completed Jobs</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                                th:text="${completedJobsCount}"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a class="col-xl-3 col-md-6 mb-4 h-100 py-2"
+                            th:href="@{/freelancer/proposals?titleSearch=&statusSearch=1}">
+                            <div class="card border-left-primary shadow h-100 py-2"
+                                style="border-left: .25rem solid #36b9cc!important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Applied Jobs</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                                th:text="${processingProposalCounts}"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a class="col-xl-3 col-md-6 mb-4 h-100 py-2" th:href="@{/freelancer/proposals}">
+                            <div class="card border-left-primary shadow h-100 py-2"
+                                style="border-left: .25rem solid #f6c23e!important;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Proposals</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"
+                                                th:text="${proposalCounts}"></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="row">
+                        <div class="col" th:if="${proposalCounts > 0}">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">My Proposal Status</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-bar">
+                                        <div class="chartjs-size-monitor">
+                                            <div class="chartjs-size-monitor-expand">
+                                                <div class=""></div>
+                                            </div>
+                                            <div class="chartjs-size-monitor-shrink">
+                                                <div class=""></div>
+                                            </div>
+                                        </div>
+                                        <canvas id="myChartProposal"
+                                            style="display: block; height: 160px; width: 432px;" width="540"
+                                            height="200" class="chartjs-render-monitor"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--info-->
+                    <div class="row">
+                        <div class="col">
+                            <!-- Illustrations -->
+                            <div class="card shadow mb-2">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Notice</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
+                                            th:src="@{/assets/img/index/about.jpg}" alt="...">
+                                    </div>
+                                    <p>Want to find a freelance job to do in your free time? Meet clients you’re excited
+                                        to work with and take
+                                        your career or business to new heights. Find great job, right here, right now on
+                                        our platform.
+                                    </p>
+                                    <a th:href="@{/jobs}"><button type="button" class="btn btn-light"
+                                            style="background-color: rgb(95, 97, 230);">
+                                            <span style="font-size: 115%;font-weight: 450; color: white;">Browse
+                                                Jobs</span></button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script th:inline="javascript">
+            var xValuesP = [ "Rejected", "Waiting for Approval", "Approved"];
+            var rejected = [(${ rejectedProposalCounts })];
+            var processing = [(${ processingProposalCounts })];
+            var approved = [(${ approvedProposalCounts })];
+            var yValuesP = [ rejected, processing, approved];
+            var barColorsP = [
+                "#ff2c02",
+                "#bd00fc",
+                "#00fc04"
+            ];
+
+            new Chart("myChartProposal", {
+                type: "bar",
+                data: {
+                    labels: xValuesP,
+                    datasets: [{
+                        backgroundColor: barColorsP,
+                        data: yValuesP
+                    }]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: "Proposals Status"
+                    },
+                    scales:{
+                        yAxes: [{
+                            ticks:{
+                                min: 0
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    </section>
+</body>
+
+</html>

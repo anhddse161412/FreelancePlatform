@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboardLayout_copy.html}">
+
+<head>
+
+</head>
+
+<body>
+    <section class="row" layout:fragment="content">
+        <div class="col mt-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12 text-center">
+                            <img id="image"
+                                th:src="${freelancer.avatar!=null? freelancer.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                class="rounded-circle img-fluid" style="width: 150px;" alt="Avatar">
+                        </div>
+                        <div class="col-lg-4 col-sm-12 d-flex align-items-center">
+                            <div class="d-flex flex-column">
+                                <a th:href="@{/profile/{id}(id=${freelancer.userId})}"
+                                    style="color: black; font-size: 175%;" th:text="${freelancer.name}"></a>
+                                <div class="mt-3">
+                                    <i style="color: black" class="fa fa-envelope" aria-hidden="true"></i>
+                                    <span style="color: black" th:text="${freelancer.email}"></span>
+                                </div>
+                                <div>
+                                    <i style="color: black" class="fa fa-phone" aria-hidden="true"></i>
+                                    <span style="color: black" th:text="${freelancer.phone}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-sm-12" th:if="${proposal.status == 1 && job.user.userId == session.userid}">
+                            <div class="float-right mr-3">
+                                <a class="btn btn-danger btn-lg"
+                                    th:href="@{/customer/proposals/reject/{id}(id=${proposal.proposalId})}">Reject</a>
+                            </div>
+                            <div class="float-right mr-3">
+                                <a class="btn btn-success btn-lg"
+                                    th:href="@{/customer/proposals/approve/{id}(id=${proposal.proposalId})}">Approve</a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-12">
+                            <h6>Applicant</h6>
+                            <span style="color: black"
+                                th:text="${freelancer.name+' has applied to job: '}"></span><a style="color: rgb(51, 51, 51);"
+                                th:href="@{/jobs/detail/{id}(id=${job.jobId})}" th:text="${job.title}"></a>
+                        </div>
+
+                        <div class="col-lg-9 col-sm-12 border-left pt-3 pl-3">
+                            <p style="color: black">Proposed bid: <span
+                                    th:text="${#numbers.formatDecimal(proposal.bid, 0, 'COMMA', 0, 'POINT')}"></span>VND
+                            </p>
+                            <th:block th:switch="${proposal.status}">
+                                <p th:case="0" style="color: black">Proposal status: <span class="badge badge-pill badge-outline border"
+                                    style="color: white; background-color: rgb(147, 30, 6);">Rejected</span></p>
+                                <p th:case="1" style="color: black">Proposal status: <span class="badge badge-pill badge-outline border"
+                                    style="color: white; background-color: rgb(80, 80, 80);">Waiting for Approval</span></p>
+                                <p th:case="2" style="color: black">Proposal status: <span class="badge badge-pill badge-outline border"
+                                    style="color: white; background-color: rgb(71, 177, 35);">Approved</span></p>
+                            </th:block>
+                            <h6>Cover letter</h6>
+                            <p style="color: black" th:text="${proposal.description}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+
+</head>
+
+<body>
+    <div th:fragment="nav">
+        <style>
+            .header-link {
+                font-size: 125%;
+                font-weight: 450;
+                color: rgb(104, 104, 104);
+            }
+        </style>
+
+        <nav class="navbar navbar-detached align-items-center navbar-expand-md bg-navbar-theme p-0" id="layout-navbar">
+            <div class="container-fluid navbar-nav-right d-flex align-items-center justify-content-between"
+                id="navbarsExampleDefault">
+                <div class="app-brand demo m-4">
+                    <a th:href="@{/}" class="app-brand-link gap-2">
+                        <span class="app-brand-logo demo">
+                            <img th:src="@{/assets/img/logo/125.png}" alt="" class="img-fluid" height="1rem" />
+                        </span>
+                        <span class="app-brand-text demo menu-text fw-bolder ms-2">DABAD
+                        </span>
+                    </a>
+                </div>
+                <button class="navbar-toggler mr-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-ex-3">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- Guest -->
+                <div th:if="${session.userid == null}" class="collapse navbar-collapse" id="navbar-ex-3">
+                    <div class="navbar-nav ms-auto">
+                        <ul class="navbar-nav align-items-center ms-auto">
+                            <li class="nav-item me-5">
+                                <a class="nav-link" th:href="@{/jobs}"><button type="button" class="btn btn-link"><span
+                                            class="header-link">Available Jobs</span></button></a>
+                            </li>
+                            <li class="nav-item me-5">
+                                <a class="nav-link" th:href="@{/signin}"><button type="button" class="btn btn-link">
+                                        <span class="header-link">Log In</span></button></a>
+                            </li>
+                            <li class="nav-item me-5">
+                                <a class="nav-link" th:href="@{/signup}"><button type="button" class="btn btn-light"
+                                        style="background-color: rgb(95, 97, 230);"> <span
+                                            style="font-size: 115%;font-weight: 450; color: white;">Sign
+                                            Up</span></button></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Customer -->
+                <div th:if="${session.role == 2}" class="collapse navbar-collapse" id="navbar-ex-3">
+                    <div class="navbar-nav ms-auto">
+                        <ul class="navbar-nav align-items-center ms-auto">
+                            <!-- Jobs -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle" href="javascript:void(0);"
+                                    data-bs-toggle="dropdown"><button type="button" class="btn btn-link">
+                                        <span class="header-link">Jobs</span></button>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/jobs}">
+                                            <span class="align-middle">All Job Posts</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/customer/jobs/add}">
+                                            <span class="align-middle">Post a Job</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/customer/jobs}">
+                                            <span class="align-middle">My Jobs</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/customer/jobs/ongoing}">
+                                            <span class="align-middle">My On-going Jobs</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--/ Jobs -->
+                            <li class="nav-item me-5">
+                                <a class="nav-link" th:href="@{/customer/proposals}"><button type="button"
+                                        class="btn btn-link">
+                                        <span class="header-link">Proposals</span></button></a>
+                            </li>
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown me-5">
+                                <a class="nav-link dropdown-toggle hide-arrow d-flex justify-content-center"
+                                    href="javascript:void(0);" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img th:src="${session.avatar!=null? session.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                            alt class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/profile/{id}(id=${session.userid})}">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img th:src="${session.avatar!=null? session.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                                            alt class="w-px-40 h-auto rounded-circle" />
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-semibold d-block" th:text="${session.name}"></span>
+                                                    <small class="text-muted">Client</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/profile/{id}(id=${session.userid})}">
+                                            <i class="bx bx-user me-2"></i>
+                                            <span class="align-middle">My Profile</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/logout}">
+                                            <i class="bx bx-power-off me-2"></i>
+                                            <span class="align-middle">Log Out</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--/ User -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Freelancer -->
+                <div th:if="${session.role == 3}" class="collapse navbar-collapse" id="navbar-ex-3">
+                    <div class="navbar-nav ms-auto">
+                        <ul class="navbar-nav align-items-center ms-auto">
+                            <!-- Jobs -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle" href="javascript:void(0);"
+                                    data-bs-toggle="dropdown">
+                                    <button type="button"
+                                        class="btn btn-link">
+                                        <span class="header-link">Jobs</span></button>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/jobs}">
+                                            <span class="align-middle">All Job Posts</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/freelancer/jobs/ongoing}">
+                                            <span class="align-middle">My On-going Jobs</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/freelancer/jobs/completed}">
+                                            <span class="align-middle">My Completed Jobs</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--/ Jobs -->
+                            <li class="nav-item me-5">
+                                <a class="nav-link" th:href="@{/freelancer/proposals}"><button type="button"
+                                        class="btn btn-link">
+                                        <span class="header-link">Proposals</span></button></a>
+                            </li>
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow d-flex justify-content-center"
+                                    href="javascript:void(0);" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img th:src="${session.avatar!=null? session.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                            alt class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/profile/{id}(id=${session.userid})}">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img th:src="${session.avatar!=null? session.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                                            alt class="w-px-40 h-auto rounded-circle" />
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-semibold d-block" th:text="${session.name}"></span>
+                                                    <small class="text-muted">Freelancer</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/profile/{id}(id=${session.userid})}">
+                                            <i class="bx bx-user me-2"></i>
+                                            <span class="align-middle">My Profile</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/logout}">
+                                            <i class="bx bx-power-off me-2"></i>
+                                            <span class="align-middle">Log Out</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--/ User -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Admin -->
+                <div th:if="${session.role == 1}" class="collapse navbar-collapse" id="navbar-ex-3">
+                    <div class="navbar-nav ms-auto">
+                        <ul class="navbar-nav align-items-center ms-auto">
+                            <li class="nav-item me-5">
+                                <a class="nav-link" th:href="@{/admin/allJob}"><button type="button" class="btn btn-link">
+                                        <span class="header-link">Jobs</span></button></a>
+                            </li>
+                            <li class="nav-item me-5">
+                                <a class="nav-link" th:href="@{/admin/accounts}"><button type="button" class="btn btn-link">
+                                        <span class="header-link">Accounts</span></button></a>
+                            </li>
+                            <!-- User -->
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow d-flex justify-content-center"
+                                    href="javascript:void(0);" data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img th:src="${session.avatar!=null? session.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                            alt class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img th:src="${session.avatar!=null? session.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                                            alt class="w-px-40 h-auto rounded-circle" />
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-semibold d-block" th:text="${session.name}"></span>
+                                                    <small class="text-muted">Admin</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" th:href="@{/logout}">
+                                            <i class="bx bx-power-off me-2"></i>
+                                            <span class="align-middle">Log Out</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--/ User -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</body>
+
+</html>

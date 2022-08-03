@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{dashboardLayout_copy.html}">
+
+<head>
+
+</head>
+
+<body>
+    <section class="row" layout:fragment="content">
+        <div class="col mt-4">
+            <div class="alert alert-primary mb-3 pl-5" role="alert" th:if="${message != null}">[[${message}]]</div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-9 col-sm-12">
+                            <h4>[[${job.title}]] <a style="font-size: 90%;"
+                                    th:href="@{/customer/jobs/edit/{id}(id=${job.jobId})}"
+                                    th:if="${session.userid == job.userId && job.status==1}"><i
+                                        class="fas fa-edit fa-fw"></i></a>
+                            </h4>
+                            <hr>
+                            <h6>[[${jobField}]] <a th:data-id="${job.jobId}" th:data-name="${job.title}"
+                                    style="color: rgb(168, 0, 0);font-size: 90%;"
+                                    th:if="${(session.userid == job.userId && job.status==1)}"
+                                    onclick="showConfirmModalDialog(this.getAttribute('data-id'),this.getAttribute('data-name'))"
+                                    class="float-right btn btn-danger text-white"><i class="fas fa-trash fa-fw"></i></a>
+                                <a th:data-id="${job.jobId}" th:data-name="${job.title}"
+                                    style="color: rgb(168, 0, 0);font-size: 90%;"
+                                    th:if="${session.role==1 && job.status==1}"
+                                    onclick="showConfirmModalDialogAdmin(this.getAttribute('data-id'),this.getAttribute('data-name'))"
+                                    class="float-right btn btn-danger text-white"><i class="fas fa-trash fa-fw"></i></a>
+                            </h6>
+                            <p th:text="${'Post time: '+createDate}"></p>
+                            <hr>
+                            <p style="color: black;" th:text="${job.description}"></p>
+                            <hr>
+                            <div class="row" style="color: black;">
+                                <div class="col-lg-4 col-sm-12">
+                                    <i class="fa fa-users" aria-hidden="true"></i>
+                                    <p th:text="${job.scope}" style="margin-bottom: 0;color: black;"></p>
+                                    <p style="font-size: 90%; opacity: 90%;">Scope</p>
+                                </div>
+                                <div class="col-lg-4 col-sm-12">
+                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                    <p th:text="${job.duration}" style="margin-bottom: 0;color: black;"></p>
+                                    <p style="font-size: 90%; opacity: 90%;">Duration</p>
+                                </div>
+                                <div class="col-lg-4 col-sm-12">
+                                    <i class="fa fa-credit-card" aria-hidden="true"></i>
+                                    <p style="margin-bottom: 0;color: black;"
+                                        th:text="${#numbers.formatDecimal(job.budget, 0, 'COMMA', 0, 'POINT') + 'VND'}">
+                                    </p>
+                                    <p style="font-size: 90%; opacity: 90%;">Budget</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <h6>Project status</h6>
+                            <th:block th:switch="${job.status}">
+                                <p th:case="1"><span class="badge badge-pill badge-outline border"
+                                        style="color: white; background-color: rgb(43, 121, 199);">Hiring</span></p>
+                                <p th:case="2"><span class="badge badge-pill badge-outline border"
+                                        style="color: white; background-color: rgb(186, 141, 26);">On-going</span></p>
+                                <p th:case="3"><span class="badge badge-pill badge-outline border"
+                                        style="color: white; background-color: rgb(71, 177, 35);">Completed</span></p>
+                            </th:block>
+                            <hr>
+
+                            <div class="form-group">
+                                <h6>Skills and Expertise</h6>
+                                <div class="mt-3">
+                                    <th:block th:each="tech : ${techList}" class="form-check-label">
+                                        <span class="badge badge-pill badge-outline border"
+                                            style="color: black; background-color: rgb(214, 214, 214);"
+                                            th:text="${tech.name}"></span>
+                                    </th:block>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-12 border-left"
+                            style="border-left: 1px solid black;border-color: rgb(217, 220, 221); ">
+                            <!-- Customer, hired -->
+                            <div class="float-left text-center"
+                                th:if="${(job.status==2 && session.userid == job.userId) || (job.status==3)}">
+                                <a class="btn btn btn-info mb-3 mt-3" th:data-id="${job.jobId}"
+                                    th:data-name="${job.title}" style="color: white;"
+                                    onclick="showWorkModalDialog(this.getAttribute('data-id'),this.getAttribute('data-name'))">View
+                                    work submission</a>
+                                <p style="font-size: 90%; opacity: 90%;" th:if="${job.status==2}">A freelancer was hired for this job. Click the
+                                    above button to review submission.</p>
+                                <p style="font-size: 90%; opacity: 90%;" th:if="${job.status==3}">This job has completed. Click the above button to view approved work!</p>
+                                <hr>
+                            </div>
+                            <!-- Guest -->
+                            <div th:if="${session.userid == null && job.status==1}" class="text-center">
+                                <a class="btn btn btn-success mb-3 mt-3" th:href="@{/signin}">Submit a proposal</a>
+                                <p style="font-size: 90%; opacity: 90%;">Login as a freelancer to apply
+                                </p>
+                                <hr>
+                            </div>
+                            <!-- Freelancer -->
+                            <div th:if="${session.role == 3}">
+                                <div th:if="${!isApplied && job.status==1}" class="text-center">
+                                    <a class="btn btn btn-success mb-3 mt-3"
+                                        th:href="@{/freelancer/proposals/add/{id}(id=${job.jobId})}">Submit a
+                                        proposal</a>
+                                    <hr>
+                                </div>
+                                <div th:if="${isApplied && job.status==1}" class="text-center">
+                                    <a class="btn btn btn-warning mb-3 mt-3"
+                                        th:href="@{/proposals/detail/{id}(id=${proposalId})}">View your proposal</a>
+                                    <p style="font-size: 90%; opacity: 90%;">You have submitted a proposal</p>
+                                    <hr>
+                                </div>
+                                <!-- Freelancer chua submit work -->
+                                <div th:if="${isApplied && job.status==2 && report.title == null}" class="text-center">
+                                    <a th:data-id="${job.jobId}" th:data-name="${job.title}"
+                                        class="btn btn btn-info mb-3 mt-3" style="color: white;"
+                                        onclick="showWorkSubmitModalDialog(this.getAttribute('data-id'),this.getAttribute('data-name'))">Submit
+                                        your work</a>
+                                    <p style="font-size: 90%; opacity: 90%;">You have been hired for this job, click the
+                                        above button to submit your work!</p>
+                                    <hr>
+                                </div>
+                                <!-- Freelancer da submit work -->
+                                <div th:if="${isApplied && job.status==2 && report.title != null}" class="text-center">
+                                    <a th:data-id="${job.jobId}" th:data-name="${job.title}"
+                                        class="btn btn btn-info mb-3 mt-3" style="color: white;"
+                                        onclick="showWorkSubmitModalDialog(this.getAttribute('data-id'),this.getAttribute('data-name'))">Review
+                                        or resubmit work</a>
+                                    <p style="font-size: 90%; opacity: 90%;">You have submit a work.</p>
+                                    <hr>
+                                </div>
+
+                            </div>
+
+                            <h5 class="mb-4">About the client</h5>
+                            <img id="image" alt=""
+                                th:src="${jobOwner.avatar!=null? jobOwner.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                class="rounded-circle img-fluid img-thumbnail rounded mx-auto d-block mt-3 mb-3"
+                                style="width: 200px;" />
+                            <a style="color: black; font-size: 150%;" th:text="${jobOwner.name}"
+                                th:href="@{/profile/{id}(id=${jobOwner.userId})}"></a>
+                            <br><br><i class="fa fa-envelope mt-2" style="color: black" aria-hidden="true"></i>
+                            <span style="color: black" th:text="${jobOwner.email}"></span>
+                            <br><br><i class="fa fa-phone" aria-hidden="true" style="color: black"></i>
+                            <span style="color: black" th:text="${jobOwner.phone}"></span>
+                            <br><br><i style="color: black" class="fa fa-building" aria-hidden="true"></i>
+                            <span style="color: black" th:text="${ownerProfile.company}"></span>
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="mt-3">
+                <div class="row" th:if="${session.userid == job.userId}">
+                    <div class="col" th:if="${job.status==1}">
+                        <div class="row" th:if="${proposalList.isEmpty()}">
+                            <div class="col">
+                            </div>
+                        </div>
+                        <div th:if="${!proposalList.isEmpty()}" class="mb-3">
+                            <hr>
+                            <h5>All Proposals</h5>
+                            <div th:each="item, iStat : ${proposalList}">
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-lg-2 col-sm-12">
+                                                <div class="form-group">
+                                                    <img id="image"
+                                                        th:src="${item.user.avatar!=null? item.user.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                                        class="rounded-circle img-fluid" style="width: 150px;"
+                                                        alt="Avatar">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-10 col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-sm-12">
+                                                        <a style="color: black; font-size: 125%;" class="mb-3"
+                                                            th:text="${item.user.name}"
+                                                            th:href="@{/profile/{id}(id=${item.user.userId})}"></a>
+                                                        <p>Freelancer</p>
+                                                    </div>
+                                                    <div class="col-lg-6 col-sm-12">
+                                                        <div class=""
+                                                            th:if="${item.status == 1 && item.job.user.userId == session.userid}">
+                                                            <div class="float-lg-right float-md-left">
+                                                                <a class="btn btn-success"
+                                                                    th:href="@{/customer/proposals/approve/{id}(id=${item.proposalId})}">Approve</a>
+                                                            </div>
+                                                            <div class="float-lg-right float-md-left">
+                                                                <a class="btn btn-danger"
+                                                                    th:href="@{/customer/proposals/reject/{id}(id=${item.proposalId})}">Reject</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p style="font-size: 95%; color: black;">Bid: <span
+                                                        th:text="${#numbers.formatDecimal(item.bid, 0, 'COMMA', 0, 'POINT')}"></span>VND
+                                                </p>
+                                                <div style="height: 75px; text-overflow: ellipsis; white-space: wrap;
+                                                overflow: hidden; color: black;"><span style="font-weight: 650;">Cover
+                                                        letter - </span>[[${item.description}]]</div>
+                                                <a th:href="@{/proposals/detail/{id}(id=${item.proposalId})}"
+                                                    style="color: rgb(120, 123, 255);" class="mb-3">Read more...</a>
+                                                <p class="mt-3"></p>
+                                                <ul class="list-inline my-0">
+                                                    <li class="list-inline-item"
+                                                        th:each="tech, iStat : ${item.user.freelancerProfile.techs}">
+                                                        <span class="badge badge-pill badge-outline"
+                                                            style="color: black; background-color: rgb(214, 214, 214);"
+                                                            th:text="${tech.name}"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-3" th:if="${job.status==2 || job.status==3}">
+                        <hr>
+                        <h5>Hired freelancer:</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-2 col-sm-12">
+                                        <div class="form-group">
+                                            <img id="image"
+                                                th:src="${freelancer.avatar!=null? freelancer.avatar:'https://storage.cloud.google.com/freelance-c87e4.appspot.com/default.jpg'}"
+                                                class="rounded-circle img-fluid" style="width: 150px;" alt="Avatar">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-10 col-sm-12">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a style="color: black; font-size: 125%;" class="mb-3"
+                                                    th:text="${freelancer.name}"
+                                                    th:href="@{/profile/{id}(id=${freelancer.userId})}"></a>
+                                                <p>Freelancer</p>
+                                            </div>
+                                            <div class="col-6">
+
+                                            </div>
+                                        </div>
+                                        <div style="height: 75px; text-overflow: ellipsis; white-space: wrap;
+                                                overflow: hidden; color: black;"><span
+                                                style="font-weight: 650;">Overview -
+                                            </span>[[${freelancer.description}]]</div>
+                                        <a th:href="@{/profile/{id}(id=${freelancer.userId})}"
+                                            style="color: rgb(120, 123, 255);" class="mb-3">Read more...</a>
+                                        <p class="mt-3"></p>
+                                        <ul class="list-inline my-0">
+                                            <li class="list-inline-item"
+                                                th:each="tech, iStat : ${freelancer.freelancerProfile.techs}">
+                                                <span class="badge badge-pill badge-outline"
+                                                    style="color: black; background-color: rgb(214, 214, 214);"
+                                                    th:text="${tech.name}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function showConfirmModalDialog(id, title) {
+                $('#jobTitle').text(title);
+                $('#yesOption').attr('href', '/customer/jobs/delete/' + id);
+                $('#confirmationId').modal('show');
+            }
+
+            function showConfirmModalDialogAdmin(id, title) {
+                $('#jobTitle').text(title);
+                $('#yesOption').attr('href', '/admin/delete/job/' + id);
+                $('#confirmationId').modal('show');
+            }
+
+            function showWorkSubmitModalDialog(id, title) {
+                $('#jobTitle').text(title);
+                $('#workSubmitId').modal('show');
+            }
+
+            function showWorkModalDialog(id, title) {
+                $('#jobTitle').text(title);
+                $('#workId').modal('show');
+            }
+        </script>
+        <!-- Modal for delete a job -->
+        <div class="modal fade" id="confirmationId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmation</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"
+                            style="border-width: 0px; background-color: transparent;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Do you want to delete "<span id="jobTitle"></span>"?
+                    </div>
+                    <div class="modal-footer">
+                        <a id="yesOption" type="button" class="btn btn-danger">Yes</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal for submit a work -->
+        <div class="modal fade" id="workSubmitId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Submit a work</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form th:action="@{/reports/save}" method="post" th:object="${report}"
+                        enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <input type="hidden" name="jobId" th:value="${job.jobId}">
+                            <input type="hidden" name="freelancerId" th:value="${session.userid}">
+                            <div class="form-group">
+                                <label for="title" style="color: black;">Title</label>
+                                <input type="text" class="form-control" name="title" id="title" th:field="*{title}"
+                                    placeholder="Title">
+                            </div>
+                            <div class="form-group">
+                                <label for="description" style="color: black;">Message</label>
+                                <textarea rows="5" cols="33" class="form-control" name="description" id="description"
+                                    placeholder="Message" th:field="*{description}">[[${report.description}]]</textarea>
+                            </div>
+                            <div class="form-group" th:if="${report.status != -1}">
+                                <label for="status" style="color: black;">Status </label>
+                                <th:block th:switch="${report.status}">
+                                    <p th:case="0"><span class="badge badge-pill badge-outline border"
+                                            style="color: white; background-color: rgb(147, 30, 6);">Rejected</span></p>
+                                    <p th:case="1"><span class="badge badge-pill badge-outline border"
+                                            style="color: white; background-color: rgb(80, 80, 80);">Waiting for
+                                            Approval</span></p>
+                                    <p th:case="2"><span class="badge badge-pill badge-outline border"
+                                            style="color: white; background-color: rgb(71, 177, 35);">Approved</span>
+                                    </p>
+                                </th:block>
+                            </div>
+                            <div class="form-group" th:if="${report.title != null}">
+                                <label for="file" style="color: black;">Attachments</label>
+                                <br>
+                                <a th:href="${fileUrl}" th:text="${fileName}"></a>
+                            </div>
+                            <div class="form-group">
+                                <label for="file" style="color: black;">Update File</label>
+                                <input type="file" name="file" class="form-control-file" id="file"
+                                    placeholder="Work file" aria-describedby="file">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal for review a work -->
+        <div class="modal fade" id="workId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Review a work</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div th:if="${report.title != null}">
+                            <input type="hidden" name="jobId" th:value="${job.jobId}">
+                            <div class="form-group">
+                                <label for="title" style="color: black;">Title</label>
+                                <input type="text" class="form-control" name="title" id="title"
+                                    th:value="${report.title}" placeholder="Title" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" style="color: black;">Message</label>
+                                <textarea rows="5" cols="33" class="form-control" name="description" id="description"
+                                    placeholder="Message" readonly>[[${report.description}]]</textarea>
+                            </div>
+                            <div class="form-group" th:if="${report.status != -1}">
+                                <label for="status" style="color: black;">Status: </label>
+                                <th:block th:switch="${report.status}">
+                                    <p th:case="0"><span class="badge badge-pill badge-outline border"
+                                            style="color: white; background-color: rgb(147, 30, 6);">Rejected</span></p>
+                                    <p th:case="1"><span class="badge badge-pill badge-outline border"
+                                            style="color: white; background-color: rgb(80, 80, 80);">Waiting for
+                                            Approval</span></p>
+                                    <p th:case="2"><span class="badge badge-pill badge-outline border"
+                                            style="color: white; background-color: rgb(71, 177, 35);">Approved</span>
+                                    </p>
+                                </th:block>
+                            </div>
+                            <div class="form-group">
+                                <label for="file" style="color: black;">Attachments</label>
+                                <br>
+                                <a th:href="${fileUrl}" th:text="${fileName}"></a>
+                            </div>
+                            <a th:href="@{/jobs/pay/{id}(id=${job.jobId})}" style="color: white;"
+                                class="btn btn btn-info mb-3 mt-3"
+                                th:if="${report.title != null && report.status==2 && job.status!=3}">Proceed to
+                                payment</a>
+                        </div>
+                        <div th:if="${report.title == null}">
+                            <p>No work has been submitted!</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer" th:if="${report.title != null && report.status==1}">
+                        <a class="btn btn-primary" th:href="@{/reports/approve/{id}(id=${report.reportId})}">Approve</a>
+                        <a class="btn btn-danger" th:href="@{/reports/reject/{id}(id=${report.reportId})}">Reject</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
